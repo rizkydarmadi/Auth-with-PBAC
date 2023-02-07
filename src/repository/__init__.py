@@ -10,6 +10,7 @@ class Crud:
     def __commit(stmt: str) -> None:
         conn = engine.connect()
         conn.execute(text(stmt))
+        conn.commit()
 
     @staticmethod
     def __fetchall(stmt: str):
@@ -60,17 +61,15 @@ class Crud:
 
     def specific_get(self, pk: int, condition: str = None):
         if condition is None:
-            stmt = f"SELECT * FROM {self.table} WHERE id {pk};"
+            stmt = f"SELECT * FROM {self.table} WHERE id = {pk};"
         else:
-            stmt = f"SELECT * FROM {self.table} WHERE id {pk} {condition};"
+            stmt = f"SELECT * FROM {self.table} WHERE id = {pk} {condition};"
 
         result = Crud.__fetchone(stmt=stmt)
         return result
 
     def update(self, pk: int, set: str):
-        stmt = f"""UPDATE {self.table}
-                    SET {set}
-                    WHERE id = {pk};"""
+        stmt = f"""UPDATE {self.table} SET {set} WHERE id = {pk};"""
         Crud.__commit(stmt=stmt)
 
     def delete(self, pk: int, set: str):
